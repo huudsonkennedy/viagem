@@ -53,11 +53,11 @@ class TempoparadosController extends AppController
         if ($this->request->is('post')) {
             $tempoparado = $this->Tempoparados->patchEntity($tempoparado, $this->request->getData());
             if ($this->Tempoparados->save($tempoparado)) {
-                $this->Flash->success(__('The tempoparado has been saved.'));
+               // $this->Flash->success(__('The tempoparado has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['Controller'=>'Pages','action' => 'index']);
             }
-            $this->Flash->error(__('The tempoparado could not be saved. Please, try again.'));
+            //$this->Flash->error(__('The tempoparado could not be saved. Please, try again.'));
         }
         $cidades = $this->Tempoparados->Cidades->find('list', ['limit' => 200])->all();
         $this->set(compact('tempoparado', 'cidades'));
@@ -78,11 +78,11 @@ class TempoparadosController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tempoparado = $this->Tempoparados->patchEntity($tempoparado, $this->request->getData());
             if ($this->Tempoparados->save($tempoparado)) {
-                $this->Flash->success(__('The tempoparado has been saved.'));
+               // $this->Flash->success(__('The tempoparado has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+              //  return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The tempoparado could not be saved. Please, try again.'));
+         //   $this->Flash->error(__('The tempoparado could not be saved. Please, try again.'));
         }
         $cidades = $this->Tempoparados->Cidades->find('list', ['limit' => 200])->all();
         $this->set(compact('tempoparado', 'cidades'));

@@ -10,8 +10,8 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string|null $nome
- * @property string|null $kmdaanterior
- * @property string|null $kmacumulado
+ * @property int|null $kmdaanterior
+ * @property int|null $kmacumulado
  *
  * @property \App\Model\Entity\Tempoparado[] $tempoparados
  */

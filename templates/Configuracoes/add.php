@@ -18,7 +18,7 @@
                 <legend><?= __('Add Configuraco') ?></legend>
                 <?php
                     echo $this->Form->control('velocidade');
-                    echo $this->Form->control('horasaida');
+                    echo $this->Form->control('horasaida', ['empty' => true]);
                 ?>
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>

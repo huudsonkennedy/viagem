@@ -20,8 +20,8 @@ class ConfiguracoesFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'velocidade' => 'Lorem ipsum dolor sit amet',
-                'horasaida' => 'Lorem ipsum dolor sit amet',
+                'velocidade' => 1,
+                'horasaida' => '2023-05-23 19:01:54',
             ],
         ];
         parent::init();

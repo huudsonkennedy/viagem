@@ -9,8 +9,8 @@ use Cake\ORM\Entity;
  * Configuraco Entity
  *
  * @property int $id
- * @property string|null $velocidade
- * @property string|null $horasaida
+ * @property int|null $velocidade
+ * @property \Cake\I18n\FrozenTime|null $horasaida
  */
 class Configuraco extends Entity
 {

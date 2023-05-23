@@ -21,7 +21,7 @@
                 <?php foreach ($configuracoes as $configuraco): ?>
                 <tr>
                     <td><?= $this->Number->format($configuraco->id) ?></td>
-                    <td><?= h($configuraco->velocidade) ?></td>
+                    <td><?= $configuraco->velocidade === null ? '' : $this->Number->format($configuraco->velocidade) ?></td>
                     <td><?= h($configuraco->horasaida) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $configuraco->id]) ?>

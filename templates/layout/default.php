@@ -18,10 +18,11 @@
     <?= $this->fetch('css') ?>
 
      <?= $this->Html->script([
-       'bootstrap.bundle.min','bootstrap.min'
+       'bootstrap.bundle.min','bootstrap.min','jquery-3.5.1.min'
 
     ]) ?>
     <?= $this->fetch('script') ?>
+
   </head>
   <body>
   <?= $this->fetch('content') ?>

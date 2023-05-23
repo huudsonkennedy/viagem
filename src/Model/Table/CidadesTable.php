@@ -62,13 +62,11 @@ class CidadesTable extends Table
             ->allowEmptyString('nome');
 
         $validator
-            ->scalar('kmdaanterior')
-            ->maxLength('kmdaanterior', 45)
+            ->integer('kmdaanterior')
             ->allowEmptyString('kmdaanterior');
 
         $validator
-            ->scalar('kmacumulado')
-            ->maxLength('kmacumulado', 45)
+            ->integer('kmacumulado')
             ->allowEmptyString('kmacumulado');
 
         return $validator;

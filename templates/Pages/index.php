@@ -1,248 +1,313 @@
+  
 <div class="container py-4">
-    <h2 class="font-weight-light text-center text-muted py-3">Bootstrap Timeline</h2>
+    <h2 class="font-weight-light text-center py-3">Planejamento Viagem 2023</h2>
+    <div class="row">
+    <div class="col-md-6">
+        <b>Velocidade:</b>
+        <div class="input-group mb-3 border-dark">
+        <input type="number" value="<?=$dados->velocidade?>" class="form-control border-dark" placeholder="Velocidade" id="velocidade" aria-label="Velocidade" aria-describedby="Velocidade">
+        <button class="btn btn-outline-secondary border-dark" type="button"  onclick="velocidade()">Alterar</button>
+        </div>
+    </div>
 
-    <!-- timeline item 1 -->
+     <div class="col-md-6">
+         <b>Hora da Saída:</b>
+        <div class="input-group mb-3">
+        <input type="datetime-local" value="<?=$dados->horasaida?>" class="form-control border-dark" id="horasaida"placeholder="Saida" aria-label="Saida" aria-describedby="Saida">
+        <button class="btn btn-outline-secondary border-dark" type="button" onclick="hora()" >Alterar</button>
+        </div>
+    </div>
+</div>
+<?php
+function convertHoras($horasInteiras) {
+    // Define o formato de saida
+    $formato = '%02d:%02d';
+    // Converte para minutos
+    $minutos = $horasInteiras * 60;
+
+    // Converte para o formato hora
+    $horas = floor($minutos / 60);
+    $minutos = ($minutos % 60);
+
+    // Retorna o valor
+    return sprintf($formato, $horas, $minutos);
+}
+
+function soma_hora($data, $duracao){
+    //$data = $horasaida[$counter-1];
+    $duracao = convertHoras($duracao);
+    $v = explode(':', $duracao);
+    $resposta = date('d/m/Y H:i:s', strtotime("{$data} + {$v[0]} hours {$v[1]} minutes"));
+    return $resposta;                           
+}
+function soma_saida($data, $duracao){
+    //$data = $horasaida[$counter-1];
+    //$duracao = convertHoras($duracao);
+    $v = explode(':', $duracao);
+    $resposta = date('d/m/Y H:i:s', strtotime("{$data} + {$v[0]} hours {$v[1]} minutes"));
+    return $resposta;                           
+}
+$counter = 0;
+$horasaida = array();
+$horachegada  = array();
+foreach($cidades as $cidade){
+$duracao = $cidade->kmdaanterior / $dados->velocidade;      
+        ?>
+<!-- timeline item 1 -->
     <div class="row">
         <!-- timeline item 1 left dot -->
-        <div class="col-auto text-center flex-column d-none d-sm-flex">
+        <div class="col-auto text-center flex-column  d-sm-flex">
             <div class="row h-50">
-                <div class="col">&nbsp;</div>
+                <div class="col <?= $counter ===0 ? '' : 'border-end border-dark'?>">&nbsp;</div>
                 <div class="col">&nbsp;</div>
             </div>
             <h5 class="m-2">
-                <span class="badge rounded-pill bg-light border">&nbsp;</span>
+                <span class="badge border-dark rounded-pill <?= (count($cidade->tempoparados)) > 0 ? 'bg-success' : 'bg-dark'?> border">&nbsp;</span>
             </h5>
             <div class="row h-50">
-                <div class="col border-end order">&nbsp;</div>
+                <div class="col <?= $counter === 22 ? '' : 'border-end border-dark'?>">&nbsp;</div>
                 <div class="col">&nbsp;</div>
             </div>
         </div>
         <!-- timeline item 1 event content -->
         <div class="col py-2">
-            <div class="card">
+            <div class="card <?= (count($cidade->tempoparados)) > 0 ? 'border-success shadow' : 'border-dark'?>">
                 <div class="card-body">
-                    <div class="float-end text-muted">Mon, Jan 9th 2021 7:00 AM</div>
-                    <h4 class="card-title text-muted">Day 1 Orientation</h4>
-                    <p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--/row-->
-    <!-- timeline item 2 -->
-    <div class="row">
-        <div class="col-auto text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-success">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <div class="col py-2">
-            <div class="card border-success shadow">
-                <div class="card-body">
-                    <div class="float-end text-success">Tue, Jan 10th 2021 8:30 AM</div>
-                    <h4 class="card-title text-success">Day 2 Sessions</h4>
-                    <p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t2_details" data-bs-toggle="collapse">Show Details ▼</button>
-                    <div class="collapse border" id="t2_details">
-                        <div class="p-2 text-monospace">
-                            <div>08:30 - 09:00 Breakfast in CR 2A</div>
-                            <div>09:00 - 10:30 Live sessions in CR 3</div>
-                            <div>10:30 - 10:45 Break</div>
-                            <div>10:45 - 12:00 Live sessions in CR 3</div>
+                   <h4 class="card-title"><?=$cidade->nome?></h4>
+                        <div class="row ">
+                            <div class="col-md-4">
+                                <b>Distância: </b><span><?=$cidade->kmdaanterior;?></span>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Distância Percorrida: </b><span><?=$cidade->kmacumulado;?></span>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Chegada: </b><span>
+                                 <?php
+                                if ($counter === 0) {
+                                    //$horachegada[$counter] = $dados->horasaida;
+                                    $horachegada[$counter] =  $dados->horasaida;
+
+                                     echo $horachegada[$counter];
+                                    //echo  date('d/m/Y H:i:s', strtotime($dados->horasaida));
+                                }
+                                if($counter === 1 ){
+                                    $horachegada[$counter] = soma_hora($dados->horasaida, $duracao);
+                                    echo date('d/m/Y H:i:s', strtotime($horachegada[$counter]));
+                                   // echo $horachegada[$counter];   
+                                  // echo $horachegada[$counter];
+                                }if($counter > 1){
+                                    $data = $horasaida[$counter-1];
+                                    $horachegada[$counter] = soma_hora($data, $duracao);
+                                   echo $horachegada[$counter];
+                                   // echo $horachegada[$counter];
+                                }
+                                ?>    
+
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Duração: </b><span>
+                                <?php
+                                echo convertHoras($duracao);
+                                ?>
+                                </span>
+                            </div>
+                             <div class="col-md-4">
+                                <b>Saída: </b><span>
+                                <?php
+                                if ($counter === 0) {
+                                    //$horasaida[$counter] = $dados->horasaida;
+                                    $horasaida[$counter] =  $dados->horasaida;
+                                    echo $horasaida[$counter];
+                                }
+                                if($counter === 1){
+                                        $tempo_parado = "";
+                                    if ((count($cidade->tempoparados)) > 0) {
+                                        $tempo_parado = $cidade->tempoparados['0']->tempo;
+                                        $horasaida[$counter] = soma_saida($horachegada[$counter], $tempo_parado);
+                                    } else{
+                                        $horasaida[$counter] = $horachegada[$counter];
+                                    }
+                                    //$horasaida[$counter] = soma_hora($dados->horasaida, $duracao);
+                                    echo date('d/m/Y H:i:s', strtotime($horasaida[$counter]));
+                                    //echo $horasaida[$counter];   
+                                }
+                                if($counter > 1){
+                                    $tempo_parado = "";
+                                    if ((count($cidade->tempoparados)) > 0) {
+                                        $tempo_parado = $cidade->tempoparados['0']->tempo;
+                                        $horasaida[$counter] = soma_saida($horachegada[$counter], $tempo_parado);
+                                    } else{
+                                        $horasaida[$counter] = $horachegada[$counter];
+                                    }
+                                    //$horasaida[$counter] = soma_hora($dados->horasaida, $duracao);
+                                    
+                                    echo $horasaida[$counter];   
+                                }
+                               /* if($counter > 1){
+                                    $data = $horasaida[$counter-1];
+                                    $horasaida[$counter] = soma_hora($data, $duracao);
+                                    echo $horasaida[$counter];
+                                }*/
+                                ?>
+                                </span>
+                            </div>
+                             <div class="col-md-4">
+                                <b>Tempo Parado: </b>
+<?php
+if((count($cidade->tempoparados)) >0){
+$id_tempoparado = $cidade->tempoparados['0']->id;
+    ?>
+ <button type="button" class="btn btn-success btn-sm" onclick="editar('<?=$cidade->nome?>','<?=$id_tempoparado?>','<?=$cidade->tempoparados['0']->tempo?>','<?=$cidade->id?>')" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"><?=$cidade->tempoparados['0']->tempo?></button>
+ <button type="button" class="btn btn-danger btn-sm" onclick="excluir('<?=$cidade->tempoparados['0']->id?>')" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">EXCLUIR</button>
+    <?php
+}else{
+    ?>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="adicionar('<?=$cidade->id?>','<?=$cidade->nome?>')" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">ADICIONAR</button>
+    <?php
+}
+?>
+
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     <!--/row-->
-    <!-- timeline item 3 -->
-    <div class="row">
-        <div class="col-auto text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-light border">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <div class="col py-2">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-end text-muted">Wed, Jan 11th 2021 8:30 AM</div>
-                    <h4 class="card-title">Day 3 Sessions</h4>
-                    <p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual
-                        bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before
-                        they sold out gastropub taxidermy Vice.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--/row-->
-    <!-- timeline item 4 -->
-    <div class="row">
-        <div class="col-auto text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-light border">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <div class="col py-2">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-end text-muted">Thu, Jan 12th 2021 11:30 AM</div>
-                    <h4 class="card-title">Day 4 Wrap-up</h4>
-                    <p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--/row-->
+<?php
+        $counter ++;
+}
+?>
 </div>
 <!--container-->
-
-<hr class="my-5">
-
-<div class="container py-4">
-    
-    <!-- timeline item 1 -->
-    <div class="row no-gutters">
-        <div class="col-sm"> <!--spacer--> </div>
-        <!-- timeline item 1 center dot -->
-        <div class="col-sm-1 text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-light border">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <!-- timeline item 1 event content -->
-        <div class="col-sm py-2">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-end text-muted small">Jan 9th 2021 7:00 AM</div>
-                    <h4 class="card-title text-muted">Day 1 Orientation</h4>
-                    <p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
-                </div>
-            </div>
-        </div>
+<!-- Modal -->
+<div class="modal fade" id="editartempoparado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Tempo Parado</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+    Informe tempo parado em: <span id="cidade_editar"></span>   
+    <input type="time" class="form-control" id="tempo_editar" name="tempo">
+    <input type="text" class="form-control" id="id_editar" name="id" hidden >
+    <input type="text" class="form-control" id="cidadeid_editar" name="id" hidden >
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" onclick="editartempo()"class="btn btn-primary">Salvar</button>
+      </div>
     </div>
-    <!--/row-->
-    <!-- timeline item 2 -->
-    <div class="row no-gutters">
-        <div class="col-sm py-2">
-            <div class="card border-success shadow">
-                <div class="card-body">
-                    <div class="float-end text-success small">Jan 10th 2021 8:30 AM</div>
-                    <h4 class="card-title text-success">Day 2 Sessions</h4>
-                    <p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t22_details" data-bs-toggle="collapse">Show Details ▼</button>
-                    <div class="collapse border" id="t22_details">
-                        <div class="p-2 text-monospace">
-                            <div>08:30 - 09:00 Breakfast in CR 2A</div>
-                            <div>09:00 - 10:30 Live sessions in CR 3</div>
-                            <div>10:30 - 10:45 Break</div>
-                            <div>10:45 - 12:00 Live sessions in CR 3</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-1 text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-success">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <div class="col-sm"> <!--spacer--> </div>
-    </div>
-    <!--/row-->
-    <!-- timeline item 3 -->
-    <div class="row no-gutters">
-        <div class="col-sm"> <!--spacer--> </div>
-        <div class="col-sm-1 text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-light border">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <div class="col-sm py-2">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-end text-muted small">Jan 11th 2021 8:30 AM</div>
-                    <h4 class="card-title">Day 3 Sessions</h4>
-                    <p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual
-                        bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--/row-->
-    <!-- timeline item 4 -->
-    <div class="row no-gutters">
-        <div class="col-sm py-2">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-end text-muted small">Jan 12th 2021 11:30 AM</div>
-                    <h4 class="card-title">Day 4 Wrap-up</h4>
-                    <p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-1 text-center flex-column d-none d-sm-flex">
-            <div class="row h-50">
-                <div class="col border-end">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-            <h5 class="m-2">
-                <span class="badge rounded-pill bg-light border">&nbsp;</span>
-            </h5>
-            <div class="row h-50">
-                <div class="col">&nbsp;</div>
-                <div class="col">&nbsp;</div>
-            </div>
-        </div>
-        <div class="col-sm"> <!--spacer--> </div>
-    </div>
-    <!--/row-->
+  </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="tempoparado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Tempo Parado</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+    Informe tempo parado em: <span id="cidade"></span>   
+    <input type="time" class="form-control" id="tempo" name="tempo">
+    <input type="text" class="form-control" id="id" name="id" hidden >
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" onclick="salvartempo()"class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    function adicionar(id, nome){
+        $('#tempoparado').modal('show');
+        $("#cidade").html(nome);
+        $("#id").val(id);
+       
+///alert(nome);
+    }
+     function editar(nome, id, tempo, cidade_id){
+        $('#editartempoparado').modal('show');
+        $("#cidade_editar").html(nome);
+        $("#tempo_editar").val(tempo);
+        $("#id_editar").val(id);
+         $("#cidadeid_editar").val(cidade_id);
+       
+///alert(nome);
+    }
+    function salvartempo(){
+        var tempo = $("#tempo").val();
+        var id = $("#id").val();
+        if(!tempo){
+        alert('Necessário informar um valor ou clique em cancelar!'+ id);
+        }else{
+            var url = "<?= $this->Url->build(['controller' => 'Tempoparados', 'action' => 'add']); ?>";
+            $.post(url, { cidade_id: id, tempo: tempo })
+            
+            .done(function( data ) {
+                 $('#tempoparado').modal('hide');
+                 location.reload(true)
+               // alert( "Data Loaded: " + data );
+            });
+        }
+    }
+
+    function editartempo(){
+        var tempo = $("#tempo_editar").val();
+        var id = $("#id_editar").val();
+        var cidade_id = $("#cidadeid_editar").val();
+        if(!tempo){
+        alert('Necessário informar um valor ou clique em cancelar!'+ id);
+        }else{
+            var url = "<?= $this->Url->build(['controller' => 'Tempoparados', 'action' => 'edit']); ?>"+'/'+id;
+            $.post(url, { cidade_id: id, tempo: tempo })
+            
+            .done(function( data ) {
+                 $('#editartempoparado').modal('hide');
+                 location.reload(true)
+               // alert( "Data Loaded: " + data );
+            });
+        }
+    }
+    function excluir(id){
+         var url = "<?= $this->Url->build(['controller' => 'Tempoparados', 'action' => 'delete']); ?>"+'/'+id;
+         
+ $.post(url, { id: id})
+            
+            .done(function( data ) {
+               //  $('#editartempoparado').modal('hide');
+                 location.reload(true)
+               // alert( "Data Loaded: " + data );
+            });
+    }
+    function velocidade(){
+         var velocidade = $("#velocidade").val();
+          var url = "<?= $this->Url->build(['controller' => 'Configuracoes', 'action' => 'edit','1']); ?>";
+            $.post(url, { velocidade: velocidade })
+            
+            .done(function( data ) {
+                // $('#editartempoparado').modal('hide');
+                 location.reload(true)
+               // alert( "Data Loaded: " + data );
+            });
+    }
+    function hora(){
+         var horasaida = $("#horasaida").val();
+          var url = "<?= $this->Url->build(['controller' => 'Configuracoes', 'action' => 'edit','1']); ?>";
+            $.post(url, { horasaida: horasaida })
+            
+            .done(function( data ) {
+                // $('#editartempoparado').modal('hide');
+                 location.reload(true)
+               // alert( "Data Loaded: " + data );
+            });
+    }
+</script>

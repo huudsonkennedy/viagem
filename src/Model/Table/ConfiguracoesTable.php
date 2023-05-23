@@ -51,14 +51,12 @@ class ConfiguracoesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('velocidade')
-            ->maxLength('velocidade', 45)
+            ->integer('velocidade')
             ->allowEmptyString('velocidade');
 
         $validator
-            ->scalar('horasaida')
-            ->maxLength('horasaida', 45)
-            ->allowEmptyString('horasaida');
+            ->dateTime('horasaida')
+            ->allowEmptyDateTime('horasaida');
 
         return $validator;
     }

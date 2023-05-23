@@ -74,11 +74,11 @@ class ConfiguracoesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $configuraco = $this->Configuracoes->patchEntity($configuraco, $this->request->getData());
             if ($this->Configuracoes->save($configuraco)) {
-                $this->Flash->success(__('The configuraco has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+           //    $this->Flash->success(__('The configuraco has been saved.'));
+//
+             //   return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The configuraco could not be saved. Please, try again.'));
+          //  $this->Flash->error(__('The configuraco could not be saved. Please, try again.'));
         }
         $this->set(compact('configuraco'));
     }

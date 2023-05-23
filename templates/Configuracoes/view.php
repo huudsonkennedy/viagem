@@ -19,16 +19,16 @@
             <h3><?= h($configuraco->id) ?></h3>
             <table>
                 <tr>
+                    <th><?= __('Id') ?></th>
+                    <td><?= $this->Number->format($configuraco->id) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('Velocidade') ?></th>
-                    <td><?= h($configuraco->velocidade) ?></td>
+                    <td><?= $configuraco->velocidade === null ? '' : $this->Number->format($configuraco->velocidade) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Horasaida') ?></th>
                     <td><?= h($configuraco->horasaida) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($configuraco->id) ?></td>
                 </tr>
             </table>
         </div>

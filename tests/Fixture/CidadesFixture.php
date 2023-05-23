@@ -21,8 +21,8 @@ class CidadesFixture extends TestFixture
             [
                 'id' => 1,
                 'nome' => 'Lorem ipsum dolor sit amet',
-                'kmdaanterior' => 'Lorem ipsum dolor sit amet',
-                'kmacumulado' => 'Lorem ipsum dolor sit amet',
+                'kmdaanterior' => 1,
+                'kmacumulado' => 1,
             ],
         ];
         parent::init();
