@@ -1,4 +1,6 @@
-  
+ <?php
+ use Cake\Chronos\Chronos;
+ ?>
 <div class="container py-4">
     <h2 class="font-weight-light text-center py-3">Planejamento Viagem 2023</h2>
     <div class="row">
@@ -19,6 +21,23 @@
     </div>
 </div>
 <?php
+function calcularTempo($distancia, $velocidade) {
+    // Converter a distância para quilômetros
+    $distanciaEmKm = $distancia;
+
+    // Calcular o tempo em horas
+    $tempoEmHoras = $distanciaEmKm / $velocidade;
+
+    // Calcular as partes inteira e decimal do tempo em horas
+    $horas = floor($tempoEmHoras);
+    $minutos = floor(($tempoEmHoras - $horas) * 60);
+    $segundos = round(($tempoEmHoras - $horas - ($minutos / 60)) * 3600);
+
+    // Formatar o tempo
+    $tempoFormatado = sprintf('%02d:%02d:%02d', $horas, $minutos, $segundos);
+
+    return $tempoFormatado;
+}
 function convertHoras($horasInteiras) {
     // Define o formato de saida
     $formato = '%02d:%02d';
@@ -33,25 +52,27 @@ function convertHoras($horasInteiras) {
     return sprintf($formato, $horas, $minutos);
 }
 
-function soma_hora($data, $duracao){
-    //$data = $horasaida[$counter-1];
-    $duracao = convertHoras($duracao);
-    $v = explode(':', $duracao);
-    $resposta = date('d/m/Y H:i:s', strtotime("{$data} + {$v[0]} hours {$v[1]} minutes"));
-    return $resposta;                           
+function soma_hora($dataHora, $intervalo){
+
+    $dataHoraObj = new Chronos($dataHora);
+    $dataHoraObj = $dataHoraObj->addSeconds(strtotime($intervalo) - strtotime('00:00:00'));
+
+    return $dataHoraObj->toDateTimeString();        
 }
-function soma_saida($data, $duracao){
-    //$data = $horasaida[$counter-1];
-    //$duracao = convertHoras($duracao);
-    $v = explode(':', $duracao);
-    $resposta = date('d/m/Y H:i:s', strtotime("{$data} + {$v[0]} hours {$v[1]} minutes"));
-    return $resposta;                           
+function soma_saida($dataHora, $intervalo){
+    $dataHoraObj = new Chronos($dataHora);
+    $dataHoraObj = $dataHoraObj->addSeconds(strtotime($intervalo) - strtotime('00:00:00'));
+
+    return $dataHoraObj->toDateTimeString();                     
 }
 $counter = 0;
 $horasaida = array();
 $horachegada  = array();
+
 foreach($cidades as $cidade){
-$duracao = $cidade->kmdaanterior / $dados->velocidade;      
+$duracao = "";
+$duracao = calcularTempo($cidade->kmdaanterior , $dados->velocidade);    
+ 
         ?>
 <!-- timeline item 1 -->
     <div class="row">
@@ -76,31 +97,30 @@ $duracao = $cidade->kmdaanterior / $dados->velocidade;
                    <h4 class="card-title"><?=$cidade->nome?></h4>
                         <div class="row ">
                             <div class="col-md-4">
-                                <b>Distância: </b><span><?=$cidade->kmdaanterior;?></span>
+                                <b>Distância: </b><span><?=$cidade->kmdaanterior;?> km</span>
                             </div>
                             <div class="col-md-4">
-                                <b>Distância Percorrida: </b><span><?=$cidade->kmacumulado;?></span>
+                                <b>Distância Percorrida: </b><span><?=$cidade->kmacumulado;?> km</span>
                             </div>
                             <div class="col-md-4">
                                 <b>Chegada: </b><span>
                                  <?php
                                 if ($counter === 0) {
-                                    //$horachegada[$counter] = $dados->horasaida;
-                                    $horachegada[$counter] =  $dados->horasaida;
+                                   $horachegada[$counter] =  $dados->horasaida;
 
-                                     echo $horachegada[$counter];
-                                    //echo  date('d/m/Y H:i:s', strtotime($dados->horasaida));
+                                    echo "0";
+                                    
                                 }
                                 if($counter === 1 ){
                                     $horachegada[$counter] = soma_hora($dados->horasaida, $duracao);
-                                    echo date('d/m/Y H:i:s', strtotime($horachegada[$counter]));
-                                   // echo $horachegada[$counter];   
-                                  // echo $horachegada[$counter];
+                                     
+                                   echo '<span class="badge text-bg-success">'.date('d/m/Y H:i:s', strtotime($horachegada[$counter])).'</span>';
+                                 
                                 }if($counter > 1){
                                     $data = $horasaida[$counter-1];
                                     $horachegada[$counter] = soma_hora($data, $duracao);
-                                   echo $horachegada[$counter];
-                                   // echo $horachegada[$counter];
+                                 
+                                    echo '<span class="badge text-bg-success">'.date('d/m/Y H:i:s', strtotime($horachegada[$counter])).'</span>';
                                 }
                                 ?>    
 
@@ -109,17 +129,28 @@ $duracao = $cidade->kmdaanterior / $dados->velocidade;
                             <div class="col-md-4">
                                 <b>Duração: </b><span>
                                 <?php
-                                echo convertHoras($duracao);
+                                  if ($counter === 0) {
+                                  // $horachegada[$counter] =  $dados->horasaida;
+
+                                    echo "0";
+                                    
+                                }else{
+                                    echo '<span class="badge text-bg-warning">'.$duracao.'</span>';
+                                }
+                                
                                 ?>
                                 </span>
                             </div>
                              <div class="col-md-4">
+                                
                                 <b>Saída: </b><span>
                                 <?php
+                                //echo $counter;
                                 if ($counter === 0) {
                                     //$horasaida[$counter] = $dados->horasaida;
                                     $horasaida[$counter] =  $dados->horasaida;
-                                    echo $horasaida[$counter];
+                                    //echo date('d', strtotime($horasaida[$counter]));
+                                    echo '<span class="badge text-bg-dark">'.$horasaida[$counter].'</span>';
                                 }
                                 if($counter === 1){
                                         $tempo_parado = "";
@@ -129,9 +160,9 @@ $duracao = $cidade->kmdaanterior / $dados->velocidade;
                                     } else{
                                         $horasaida[$counter] = $horachegada[$counter];
                                     }
-                                    //$horasaida[$counter] = soma_hora($dados->horasaida, $duracao);
-                                    echo date('d/m/Y H:i:s', strtotime($horasaida[$counter]));
-                                    //echo $horasaida[$counter];   
+                                   
+                                     echo '<span class="badge text-bg-primary">'.date('d/m/Y H:i:s', strtotime($horasaida[$counter])).'</span>';
+                                     
                                 }
                                 if($counter > 1){
                                     $tempo_parado = "";
@@ -141,21 +172,22 @@ $duracao = $cidade->kmdaanterior / $dados->velocidade;
                                     } else{
                                         $horasaida[$counter] = $horachegada[$counter];
                                     }
-                                    //$horasaida[$counter] = soma_hora($dados->horasaida, $duracao);
-                                    
-                                    echo $horasaida[$counter];   
+                                  
+                                    echo '<span class="badge text-bg-primary">'.date('d/m/Y H:i:s', strtotime($horasaida[$counter])).'</span>';
                                 }
-                               /* if($counter > 1){
-                                    $data = $horasaida[$counter-1];
-                                    $horasaida[$counter] = soma_hora($data, $duracao);
-                                    echo $horasaida[$counter];
-                                }*/
+                              
                                 ?>
                                 </span>
                             </div>
                              <div class="col-md-4">
                                 <b>Tempo Parado: </b>
 <?php
+ if ($counter === 0) {
+                                  // $horachegada[$counter] =  $dados->horasaida;
+
+                                    echo "0";
+                                    
+                                }else{
 if((count($cidade->tempoparados)) >0){
 $id_tempoparado = $cidade->tempoparados['0']->id;
     ?>
@@ -167,6 +199,8 @@ $id_tempoparado = $cidade->tempoparados['0']->id;
     <button type="button" class="btn btn-secondary btn-sm" onclick="adicionar('<?=$cidade->id?>','<?=$cidade->nome?>')" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">ADICIONAR</button>
     <?php
 }
+                                }
+
 ?>
 
                             </div>
@@ -262,13 +296,13 @@ $id_tempoparado = $cidade->tempoparados['0']->id;
 
     function editartempo(){
         var tempo = $("#tempo_editar").val();
-        var id = $("#id_editar").val();
+        var id_ = $("#id_editar").val();
         var cidade_id = $("#cidadeid_editar").val();
         if(!tempo){
         alert('Necessário informar um valor ou clique em cancelar!'+ id);
         }else{
-            var url = "<?= $this->Url->build(['controller' => 'Tempoparados', 'action' => 'edit']); ?>"+'/'+id;
-            $.post(url, { cidade_id: id, tempo: tempo })
+            var url = "<?= $this->Url->build(['controller' => 'Tempoparados', 'action' => 'edit']); ?>"+'/'+id_;
+            $.post(url, { cidade_id: cidade_id, tempo: tempo })
             
             .done(function( data ) {
                  $('#editartempoparado').modal('hide');
